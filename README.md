@@ -1,4 +1,4 @@
-# Nets Demo Application
+# Nets Demo Project
 
 This is a simple RESTful web service application built using Spring Boot. It provides endpoints for managing lists of numbers, 
 storing them in an H2 in-memory database, and includes unit and integration tests to ensure functionality and quality.
