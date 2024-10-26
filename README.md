@@ -13,7 +13,7 @@ Task description for given work can be accessed [here.](springboot_task.md)
 ## Table of Contents
 - [Prerequisites](#Prerequisites)
 - [Installation](#Installation)
-- [API Endpoints](#API Endpoints)
+- [API Endpoints](#API-Endpoints)
 - [Testing](#Testing)
 - [Project Structure](#project-structure)
 - [Technologies Used](#technologies-used)
