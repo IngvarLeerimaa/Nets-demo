@@ -49,11 +49,13 @@ The application will start on `http://localhost:8080`.
 Port can be changed by navigating to `src/main/resources/application.properties` 
 and inserting your desired port number `server.port=<Port_Number>`.
 
-The application uses an H2 in-memory database. To access the H2 ui, navigate to `http://localhost:8080/h2-ui/`.
+The application uses an H2 in-memory database. 
+
+To access the H2 ui, navigate to `http://localhost:8080/h2-ui/`.
 
 ## API Endpoints
 
-- **POST /numbers** - Adds a new list of numbers.
+- **POST /numbers** - Stores each number in the database as a new entity.
   - Request Body:
     ```json
     {
@@ -63,7 +65,7 @@ The application uses an H2 in-memory database. To access the H2 ui, navigate to 
     - **Response**: JSON object of the saved Nums entity.
     - **Status Codes**:
       - `200 OK`: Successfully added numbers.
-      - `400 BAD REQUEST`: Invalid request body or contains other data types.
+      - `400 BAD REQUEST`: Invalid request body.
       - `500 INTERNAL SERVER ERROR`: An error occurred while saving the numbers.
       ![numbers](assets/images/numbers.png)
 
@@ -76,7 +78,7 @@ The application uses an H2 in-memory database. To access the H2 ui, navigate to 
       - `500 INTERNAL SERVER ERROR`: An error occurred while fetching numbers.
 ![get](assets/images/get.png)
 
-- **POST /updateById/{id}** - Update an existing list of numbers by ID.
+- **PUT /updateById/{id}** - Update an existing list of numbers by ID.
   - Request Body:
     ```json
     {
