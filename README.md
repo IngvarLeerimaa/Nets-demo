@@ -1,12 +1,14 @@
 # Nets Demo Application
 
-This is a simple RESTful web service application built using Spring Boot. It provides endpoints for managing lists of numbers, storing them in an H2 in-memory database, and includes unit and integration tests to ensure functionality and quality.
+This is a simple RESTful web service application built using Spring Boot. It provides endpoints for managing lists of numbers, 
+storing them in an H2 in-memory database, and includes unit and integration tests to ensure functionality and quality.
 
 Task description for given work can be accessed [here.](springboot_task.md)
+
 ## Features
 
 - CRUD operations on lists of numbers via REST endpoints.
-- In-memory storage using H2 database.
+- H2 in-memory storage.
 - Layered architecture following Domain-Driven Design principles.
 - Unit and integration tests using JUnit, Mockito, and Spring Boot Test.
 
@@ -42,18 +44,20 @@ To run this project, you need:
    ```bash
    mvn spring-boot:run
    ```
-The application will start on `http://localhost:8080` and port can be changed by navigating to `src/main/resources/application.properties` 
-and inserting your desired port number `server.port=<Port Number>`.
+The application will start on `http://localhost:8080`.
 
-The application uses an H2 in-memory database. To access the H2 console, navigate to `http://localhost:8080/h2-ui/`.
+Port can be changed by navigating to `src/main/resources/application.properties` 
+and inserting your desired port number `server.port=<Port_Number>`.
+
+The application uses an H2 in-memory database. To access the H2 ui, navigate to `http://localhost:8080/h2-ui/`.
 
 ## API Endpoints
 
-- **POST /post** - Add a new list of numbers.
+- **POST /numbers** - Adds a new list of numbers.
   - Request Body:
     ```json
     {
-      "numbers": [1, 2, 3, 4, 5]
+      "numbers": [54, 43, 21]
     }
     ```
     - **Response**: JSON object of the saved Nums entity.
@@ -61,6 +65,7 @@ The application uses an H2 in-memory database. To access the H2 console, navigat
       - `200 OK`: Successfully added numbers.
       - `400 BAD REQUEST`: Invalid request body or contains other data types.
       - `500 INTERNAL SERVER ERROR`: An error occurred while saving the numbers.
+      ![numbers](assets/images/numbers.png)
 
 - **GET /get**
     - Retrieve all lists of numbers.
@@ -69,13 +74,13 @@ The application uses an H2 in-memory database. To access the H2 console, navigat
       - `200 OK`: Successfully retrieved numbers.
       - `204 NO CONTENT`: No numbers found.
       - `500 INTERNAL SERVER ERROR`: An error occurred while fetching numbers.
-
+![get](assets/images/get.png)
 
 - **POST /updateById/{id}** - Update an existing list of numbers by ID.
   - Request Body:
     ```json
     {
-      "numbers": [6, 7, 8]
+      "numbers": [111]
     }
     ```
   - **Response**: JSON object of the updated Nums entity.
@@ -84,6 +89,8 @@ The application uses an H2 in-memory database. To access the H2 console, navigat
         - `404 NOT FOUND`: ID not found.
         - `400 BAD REQUEST`: Invalid request body.
         - `500 INTERNAL SERVER ERROR`: An error occurred while updating the numbers.
+        ![post](assets/images/post.png)
+        ![getNew](assets/images/getNew.png)
 
 - **DELETE /deleteNumById/{id}** - Delete a list of numbers by ID.
   - **Path Variable**: id - ID of the Nums entity to delete.
@@ -98,8 +105,8 @@ The application uses an H2 in-memory database. To access the H2 console, navigat
 The project includes unit and integration tests.
 
 - **Run all tests**:
-  ```bash
-  mvn test
+  ```bash 
+    mvn test
   ```
 
 The tests include:

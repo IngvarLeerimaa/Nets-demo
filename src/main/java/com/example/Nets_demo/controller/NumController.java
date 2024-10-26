@@ -20,50 +20,62 @@ public class NumController {
     @GetMapping("/get")
     public ResponseEntity<List<Nums>> getNums(){
         try {
-            List<Nums> numList = new ArrayList<>();
-            numRepo.findAll().forEach(numList::add);
+            List<Nums> numList = numRepo.findAll();
             if (numList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-
             return new ResponseEntity<>(numList, HttpStatus.OK);
 
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/post")
-    public ResponseEntity<Nums> addNums(@RequestBody Nums nums){
+
+    @PostMapping("/numbers")
+    public ResponseEntity<List<Nums>> addNums(@RequestBody NumberListWrapper wrapper) {
         try {
-            Nums numObj = numRepo.save(nums);
-            return new ResponseEntity<>(numObj, HttpStatus.OK);
-        } catch (Exception e){
+            List<Nums> savedNums = new ArrayList<>();
+            for (Integer number : wrapper.getNumbers()) {
+                if (number == null) { // Ensure the list doesn't contain null values
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                Nums numEntity = new Nums();
+                numEntity.setNumber(number);  // Store each number separately
+                savedNums.add(numRepo.save(numEntity));
+            }
+            return new ResponseEntity<>(savedNums, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    @PostMapping("/updateById/{id}")
-    public ResponseEntity<Nums> updateNums(@PathVariable Long id, @RequestBody Nums nums){
-    try {
-        Optional<Nums> oldNum = numRepo.findById(id);
-        if (oldNum.isPresent()) {
-            Nums newNumData = oldNum.get();
-            newNumData.setNumbers(nums.getNumbers());
 
-            Nums numObj = numRepo.save(newNumData);
-            return new ResponseEntity<>(numObj, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }catch (Exception e){
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+    @PutMapping("/updateById/{id}")
+    public ResponseEntity<Nums> updateNums(@PathVariable Long id, @RequestBody NumberListWrapper wrapper) {
+        return numRepo.findById(id).map(oldNum -> {
+            if (wrapper.getNumbers() != null && !wrapper.getNumbers().isEmpty()) {
+                oldNum.setNumber(wrapper.getNumbers().get(0));  // Set the first number from the list
+            }
+            Nums updatedNum = numRepo.save(oldNum);
+            return new ResponseEntity<>(updatedNum, HttpStatus.OK);
+        }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    }
+
+
 
     @DeleteMapping("/deleteNumById/{id}")
-    public ResponseEntity<ResponseEntity<List<Nums>>> deleteNums(@PathVariable Long id){
-        numRepo.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-
+    public ResponseEntity<Void> deleteNums(@PathVariable Long id){
+        try {
+            if (numRepo.existsById(id)) {
+                numRepo.deleteById(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 }

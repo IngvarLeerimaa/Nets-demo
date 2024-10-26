@@ -1,7 +1,10 @@
 package com.example.Nets_demo.model;
 
-import jakarta.persistence.*;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name="Numbers")
@@ -10,16 +13,14 @@ public class Nums {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
-    @ElementCollection
-    private List<Integer> numbers;
+    private Integer number;
 
     public Nums() {
     }
 
-    public Nums(long id, List<Integer> numbers) {
+    public Nums(long id, Integer number) {
         this.id = id;
-        this.numbers = numbers;
+        this.number = number;
     }
 
     public long getId() {
@@ -30,19 +31,12 @@ public class Nums {
         this.id = id;
     }
 
-    public List<Integer> getNumbers() {
-        return numbers;
+    // Getter and Setter for number
+    public Integer getNumber() {
+        return number;
     }
 
-    public void setNumbers(List<Integer> numbers) {
-        this.numbers = numbers;
-    }
-
-    @Override
-    public String toString() {
-        return "Nums{" +
-                "id=" + id +
-                ", numbers=" + numbers +
-                '}';
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 }
