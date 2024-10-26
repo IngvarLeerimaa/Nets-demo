@@ -43,7 +43,8 @@ To run this project, you need:
    mvn spring-boot:run
    ```
 The application will start on `http://localhost:8080` and port can be changed by navigating to `src/main/resources/application.properties` 
-and inserting your desired port number `server.port=<Port Number>`
+and inserting your desired port number `server.port=<Port Number>`.
+
 The application uses an H2 in-memory database. To access the H2 console, navigate to `http://localhost:8080/h2-ui/`.
 
 ## API Endpoints
