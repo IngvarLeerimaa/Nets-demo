@@ -1,7 +1,16 @@
 package com.example.Nets_demo.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.example.Nets_demo.model.Nums;
 import com.example.Nets_demo.repo.NumRepo;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,110 +23,92 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 public class NumControllerTest {
 
-    @Mock
-    private NumRepo numRepo;
+  @Mock private NumRepo numRepo;
 
-    @InjectMocks
-    private NumController numController;
+  @InjectMocks private NumController numController;
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    public void testGetNums_ReturnsListOfNums() {
-        Nums num1 = new Nums(1, 10);
-        Nums num2 = new Nums(2, 20);
-        when(numRepo.findAll()).thenReturn(Arrays.asList(num1, num2));
+  @Test
+  public void testGetNums_ReturnsListOfNums() {
+    Nums num1 = new Nums(1, 10);
+    Nums num2 = new Nums(2, 20);
+    when(numRepo.findAll()).thenReturn(Arrays.asList(num1, num2));
 
-        ResponseEntity<List<Nums>> response = numController.getNums();
+    ResponseEntity<List<Nums>> response = numController.getNums();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().size());
-        verify(numRepo, times(1)).findAll();
-    }
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(2, response.getBody().size());
+    verify(numRepo, times(1)).findAll();
+  }
 
-    @Test
-    public void testAddNums_SavesEachNumSeparately() {
-        // Create the list of numbers and wrap it in NumberListWrapper
-        List<Integer> numbers = Arrays.asList(1, 2, 3);
-        NumberListWrapper wrapper = new NumberListWrapper();
-        wrapper.setNumbers(numbers);
+  @Test
+  public void testAddNums_SavesEachNumSeparately() {
+    // Create the list of numbers and wrap it in NumberListWrapper
+    List<Integer> numbers = Arrays.asList(1, 2, 3);
+    NumberListWrapper wrapper = new NumberListWrapper();
+    wrapper.setNumbers(numbers);
 
-        when(numRepo.save(any(Nums.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0)); // Mock saving each entity
+    when(numRepo.save(any(Nums.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0)); // Mock saving each entity
 
-        // Call the updated method with the wrapper
-        ResponseEntity<List<Nums>> response = numController.addNums(wrapper);
+    // Call the updated method with the wrapper
+    ResponseEntity<List<Nums>> response = numController.addNums(wrapper);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(3, response.getBody().size());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(3, response.getBody().size());
 
-        // Verify each number was saved separately
-        verify(numRepo, times(3)).save(any(Nums.class));
-    }
+    // Verify each number was saved separately
+    verify(numRepo, times(3)).save(any(Nums.class));
+  }
 
+  @Test
+  public void testAddNums_ReturnsBadRequestForInvalidInput() throws Exception {
+    // JSON with invalid input (a string in the list)
+    String invalidJson = "{ \"numbers\": [1, \"invalid\", 3] }";
 
-    @Test
-    public void testAddNums_ReturnsBadRequestForInvalidInput() throws Exception {
-        // JSON with invalid input (a string in the list)
-        String invalidJson = "{ \"numbers\": [1, \"invalid\", 3] }";
+    mockMvc
+        .perform(post("/numbers").contentType("application/json").content(invalidJson))
+        .andExpect(status().isBadRequest()); // Expect a 400 BAD REQUEST status
+  }
 
-        mockMvc.perform(post("/numbers")
-                        .contentType("application/json")
-                        .content(invalidJson))
-                .andExpect(status().isBadRequest()); // Expect a 400 BAD REQUEST status
-    }
+  @Test
+  public void testUpdateNums_ExistingId_UpdatesNums() {
+    Nums oldNum = new Nums(1, 10); // Existing number in database
+    Nums updatedNum = new Nums(1, 20); // Expected updated result
+    NumberListWrapper wrapper = new NumberListWrapper();
+    wrapper.setNumbers(Arrays.asList(20)); // Use wrapper to send updated number
 
-    @Test
-    public void testUpdateNums_ExistingId_UpdatesNums() {
-        Nums oldNum = new Nums(1, 10); // Existing number in database
-        Nums updatedNum = new Nums(1, 20); // Expected updated result
-        NumberListWrapper wrapper = new NumberListWrapper();
-        wrapper.setNumbers(Arrays.asList(20)); // Use wrapper to send updated number
+    when(numRepo.findById(1L)).thenReturn(Optional.of(oldNum));
+    when(numRepo.save(any(Nums.class))).thenReturn(updatedNum);
 
-        when(numRepo.findById(1L)).thenReturn(Optional.of(oldNum));
-        when(numRepo.save(any(Nums.class))).thenReturn(updatedNum);
+    // Call the updateNums method with the wrapper as the request body
+    ResponseEntity<Nums> response = numController.updateNums(1L, wrapper);
 
-        // Call the updateNums method with the wrapper as the request body
-        ResponseEntity<Nums> response = numController.updateNums(1L, wrapper);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(updatedNum.getNumber(), response.getBody().getNumber());
+    verify(numRepo, times(1)).findById(1L);
+    verify(numRepo, times(1)).save(oldNum);
+  }
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedNum.getNumber(), response.getBody().getNumber());
-        verify(numRepo, times(1)).findById(1L);
-        verify(numRepo, times(1)).save(oldNum);
-    }
+  @Test
+  public void testDeleteNums_DeletesNums() {
+    when(numRepo.existsById(1L)).thenReturn(true);
+    doNothing().when(numRepo).deleteById(1L);
 
+    ResponseEntity<?> response = numController.deleteNums(1L);
 
+    assertEquals(HttpStatus.OK, response.getStatusCode());
 
-    @Test
-    public void testDeleteNums_DeletesNums() {
-        when(numRepo.existsById(1L)).thenReturn(true);
-        doNothing().when(numRepo).deleteById(1L);
-
-        ResponseEntity<?> response = numController.deleteNums(1L);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        verify(numRepo, times(1)).deleteById(1L);
-    }
-
+    verify(numRepo, times(1)).deleteById(1L);
+  }
 }

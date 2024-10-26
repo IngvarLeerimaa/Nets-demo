@@ -7,36 +7,36 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="Numbers")
+@Table(name = "Numbers")
 public class Nums {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    private Integer number;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long id;
 
-    public Nums() {
-    }
+  private Integer number;
 
-    public Nums(long id, Integer number) {
-        this.id = id;
-        this.number = number;
-    }
+  public Nums() {}
 
-    public long getId() {
-        return id;
-    }
+  public Nums(long id, Integer number) {
+    this.id = id;
+    this.number = number;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    // Getter and Setter for number
-    public Integer getNumber() {
-        return number;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
+  // Getter and Setter for number
+  public Integer getNumber() {
+    return number;
+  }
+
+  public void setNumber(Integer number) {
+    this.number = number;
+  }
 }
