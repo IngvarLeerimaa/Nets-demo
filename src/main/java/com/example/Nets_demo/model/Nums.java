@@ -31,7 +31,6 @@ public class Nums {
     this.id = id;
   }
 
-  // Getter and Setter for number
   public Integer getNumber() {
     return number;
   }

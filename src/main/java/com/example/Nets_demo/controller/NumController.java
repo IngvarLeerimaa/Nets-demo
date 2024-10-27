@@ -33,11 +33,11 @@ public class NumController {
     try {
       List<Nums> savedNums = new ArrayList<>();
       for (Integer number : wrapper.getNumbers()) {
-        if (number == null) { // Ensure the list doesn't contain null values
+        if (number == null) {
           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Nums numEntity = new Nums();
-        numEntity.setNumber(number); // Store each number separately
+        numEntity.setNumber(number);
         savedNums.add(numRepo.save(numEntity));
       }
       return new ResponseEntity<>(savedNums, HttpStatus.OK);
@@ -54,7 +54,7 @@ public class NumController {
         .map(
             oldNum -> {
               if (wrapper.getNumbers() != null && !wrapper.getNumbers().isEmpty()) {
-                oldNum.setNumber(wrapper.getNumbers().get(0)); // Set the first number from the list
+                oldNum.setNumber(wrapper.getNumbers().get(0));
               }
               Nums updatedNum = numRepo.save(oldNum);
               return new ResponseEntity<>(updatedNum, HttpStatus.OK);

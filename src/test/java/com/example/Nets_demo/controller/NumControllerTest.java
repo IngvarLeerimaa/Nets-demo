@@ -53,45 +53,39 @@ public class NumControllerTest {
 
   @Test
   public void testAddNums_SavesEachNumSeparately() {
-    // Create the list of numbers and wrap it in NumberListWrapper
     List<Integer> numbers = Arrays.asList(1, 2, 3);
     NumberListWrapper wrapper = new NumberListWrapper();
     wrapper.setNumbers(numbers);
 
-    when(numRepo.save(any(Nums.class)))
-        .thenAnswer(invocation -> invocation.getArgument(0)); // Mock saving each entity
+    when(numRepo.save(any(Nums.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-    // Call the updated method with the wrapper
     ResponseEntity<List<Nums>> response = numController.addNums(wrapper);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(3, response.getBody().size());
 
-    // Verify each number was saved separately
     verify(numRepo, times(3)).save(any(Nums.class));
   }
 
   @Test
   public void testAddNums_ReturnsBadRequestForInvalidInput() throws Exception {
-    // JSON with invalid input (a string in the list)
     String invalidJson = "{ \"numbers\": [1, \"invalid\", 3] }";
 
     mockMvc
         .perform(post("/numbers").contentType("application/json").content(invalidJson))
-        .andExpect(status().isBadRequest()); // Expect a 400 BAD REQUEST status
+        .andExpect(status().isBadRequest());
   }
 
   @Test
   public void testUpdateNums_ExistingId_UpdatesNums() {
-    Nums oldNum = new Nums(1, 10); // Existing number in database
-    Nums updatedNum = new Nums(1, 20); // Expected updated result
+    Nums oldNum = new Nums(1, 10);
+    Nums updatedNum = new Nums(1, 20);
     NumberListWrapper wrapper = new NumberListWrapper();
-    wrapper.setNumbers(Arrays.asList(20)); // Use wrapper to send updated number
+    wrapper.setNumbers(Arrays.asList(20));
 
     when(numRepo.findById(1L)).thenReturn(Optional.of(oldNum));
     when(numRepo.save(any(Nums.class))).thenReturn(updatedNum);
 
-    // Call the updateNums method with the wrapper as the request body
     ResponseEntity<Nums> response = numController.updateNums(1L, wrapper);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());

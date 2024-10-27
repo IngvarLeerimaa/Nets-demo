@@ -26,7 +26,7 @@ public class NumControllerIntegrationTest {
 
   @BeforeEach
   public void setup() {
-    numRepo.deleteAll(); // Clear existing data before each test
+    numRepo.deleteAll();
   }
 
   @Test
@@ -36,7 +36,7 @@ public class NumControllerIntegrationTest {
     mockMvc
         .perform(post("/numbers").contentType(MediaType.APPLICATION_JSON).content(jsonContent))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(5))); // Verify that 5 individual entries are created
+        .andExpect(jsonPath("$", hasSize(5)));
   }
 
   @Test
@@ -51,8 +51,7 @@ public class NumControllerIntegrationTest {
     mockMvc
         .perform(get("/get"))
         .andExpect(status().isOk())
-        .andExpect(
-            MockMvcResultMatchers.jsonPath("$", hasSize(3))) // Verify that 3 entries are returned
+        .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
         .andExpect(MockMvcResultMatchers.jsonPath("$[0].number").value(1))
         .andExpect(MockMvcResultMatchers.jsonPath("$[1].number").value(2))
         .andExpect(MockMvcResultMatchers.jsonPath("$[2].number").value(3));
@@ -64,8 +63,6 @@ public class NumControllerIntegrationTest {
     Nums savedNum = numRepo.save(nums);
 
     mockMvc.perform(delete("/deleteNumById/" + savedNum.getId())).andExpect(status().isOk());
-
-    // Verify that the entry was deleted
     mockMvc.perform(get("/get")).andExpect(status().isNoContent());
   }
 }

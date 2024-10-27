@@ -112,8 +112,9 @@ The project includes unit and integration tests.
   ```
 
 The tests include:
-- **Unit Tests**: Testing each layer of the application with Mockito.
-- **Integration Tests**: Testing the overall behavior of the application, including database interactions.
+- **Unit Tests**: `NumControllerTest` is testing each layer of the application with Mockito.
+- **Integration Tests**: `NumControllerIntegrationTest` is testing the overall behavior of the application, 
+including database interactions.
 
 ## Project Structure
 
@@ -149,3 +150,7 @@ Nets-demo/
 - Spring Data JPA
 - H2 Database
 - JUnit and Mockito for testing
+
+## Future TODO:
+- JPARepository vs CrudRepository
+- Trying to get Lombok @getter @setter work properly with my IDE. (This is the reason why I wrote out everything.)
