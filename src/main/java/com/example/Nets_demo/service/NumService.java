@@ -1,9 +1,9 @@
 package com.example.Nets_demo.service;
 
-import com.example.Nets_demo.Exceptions.*;
-import com.example.Nets_demo.DTO.NumDTO;
-import com.example.Nets_demo.model.Nums;
 import com.example.Nets_demo.DAO.NumDAO;
+import com.example.Nets_demo.DTO.NumDTO;
+import com.example.Nets_demo.Exceptions.*;
+import com.example.Nets_demo.model.Nums;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

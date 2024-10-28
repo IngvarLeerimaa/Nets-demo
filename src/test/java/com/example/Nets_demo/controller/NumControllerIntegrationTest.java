@@ -1,13 +1,12 @@
 package com.example.Nets_demo.controller;
 
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.Nets_demo.model.Nums;
 import com.example.Nets_demo.DAO.NumDAO;
+import com.example.Nets_demo.model.Nums;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +38,19 @@ public class NumControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(5)));
   }
+
   @Test
   public void testPostingWrongValue() throws Exception {
     String jsonContent = "{\"numbers\": [1, null, 2]}";
 
     mockMvc
-            .perform(post("/numbers").contentType(MediaType.APPLICATION_JSON).content(jsonContent))
-            .andExpect(status().isBadRequest());
+        .perform(post("/numbers").contentType(MediaType.APPLICATION_JSON).content(jsonContent))
+        .andExpect(status().isBadRequest());
 
     String nextContent = "{\"numbers\": [1, ä, 2]}";
     mockMvc
-            .perform(post("/numbers").contentType(MediaType.APPLICATION_JSON).content(nextContent))
-            .andExpect(status().isBadRequest());
+        .perform(post("/numbers").contentType(MediaType.APPLICATION_JSON).content(nextContent))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
@@ -58,9 +58,7 @@ public class NumControllerIntegrationTest {
     Nums num1 = new Nums(0, 1);
     Nums num2 = new Nums(0, 2);
     Nums num3 = new Nums(0, 3);
-    mockMvc
-            .perform(get("/get"))
-            .andExpect(status().isNoContent());
+    mockMvc.perform(get("/get")).andExpect(status().isNoContent());
 
     dao.save(num1);
     dao.save(num2);
@@ -84,4 +82,3 @@ public class NumControllerIntegrationTest {
     mockMvc.perform(delete("/deleteNumById/" + savedNum.getId())).andExpect(status().isNoContent());
   }
 }
-
