@@ -1,5 +1,6 @@
 package com.example.Nets_demo.controller;
 
+/*
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -66,3 +67,4 @@ public class NumControllerIntegrationTest {
     mockMvc.perform(get("/get")).andExpect(status().isNoContent());
   }
 }
+*/

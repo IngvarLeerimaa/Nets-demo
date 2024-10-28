@@ -1,8 +1,8 @@
-package com.example.Nets_demo.controller;
+package com.example.Nets_demo.DTO;
 
 import java.util.List;
 
-public class NumberListWrapper {
+public class NumDTO {
   private List<Integer> numbers;
 
   public List<Integer> getNumbers() {
