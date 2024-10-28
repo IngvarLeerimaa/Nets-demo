@@ -1,13 +1,13 @@
 package com.example.Nets_demo.controller;
 
-/*
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.Nets_demo.model.Nums;
-import com.example.Nets_demo.repo.NumRepo;
+import com.example.Nets_demo.DAO.NumDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,11 @@ public class NumControllerIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @Autowired private NumRepo numRepo;
+  @Autowired private NumDAO dao;
 
   @BeforeEach
   public void setup() {
-    numRepo.deleteAll();
+    dao.deleteAll();
   }
 
   @Test
@@ -39,15 +39,32 @@ public class NumControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(5)));
   }
+  @Test
+  public void testPostingWrongValue() throws Exception {
+    String jsonContent = "{\"numbers\": [1, null, 2]}";
+
+    mockMvc
+            .perform(post("/numbers").contentType(MediaType.APPLICATION_JSON).content(jsonContent))
+            .andExpect(status().isBadRequest());
+
+    String nextContent = "{\"numbers\": [1, ä, 2]}";
+    mockMvc
+            .perform(post("/numbers").contentType(MediaType.APPLICATION_JSON).content(nextContent))
+            .andExpect(status().isBadRequest());
+  }
 
   @Test
   public void testGetNums_ReturnsAllStoredNumbers() throws Exception {
     Nums num1 = new Nums(0, 1);
     Nums num2 = new Nums(0, 2);
     Nums num3 = new Nums(0, 3);
-    numRepo.save(num1);
-    numRepo.save(num2);
-    numRepo.save(num3);
+    mockMvc
+            .perform(get("/get"))
+            .andExpect(status().isNoContent());
+
+    dao.save(num1);
+    dao.save(num2);
+    dao.save(num3);
 
     mockMvc
         .perform(get("/get"))
@@ -61,10 +78,10 @@ public class NumControllerIntegrationTest {
   @Test
   public void testDeleteNums_DeletesStoredNumber() throws Exception {
     Nums nums = new Nums(0, 1);
-    Nums savedNum = numRepo.save(nums);
+    Nums savedNum = dao.save(nums);
 
-    mockMvc.perform(delete("/deleteNumById/" + savedNum.getId())).andExpect(status().isOk());
-    mockMvc.perform(get("/get")).andExpect(status().isNoContent());
+    mockMvc.perform(get("/get")).andExpect(status().isOk());
+    mockMvc.perform(delete("/deleteNumById/" + savedNum.getId())).andExpect(status().isNoContent());
   }
 }
-*/
+
