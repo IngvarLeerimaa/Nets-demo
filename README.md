@@ -92,11 +92,11 @@ To access the H2 ui, navigate to `http://localhost:8080/h2-ui/`.
         ![getNew](assets/images/getNew.png)
 
 - **DELETE /deleteNumById/{id}** - Delete a list of numbers by ID.
-- **Response**: JSON array of all `Nums` entities using service.get();
-  - **Path Variable**: id - ID of the Nums entity to delete.
-  - **Status Codes:**
-    - `200 OK:` Successfully deleted numbers.
-    - `204 NO CONTENT`: No numbers found.
+  - **Response**: JSON array of all `Nums` entities using service.get();
+    - **Path Variable**: id - ID of the Nums entity to delete.
+    - **Status Codes:**
+      - `200 OK:` Successfully deleted numbers.
+      - `204 NO CONTENT`: No numbers found.
     
 ## Testing
 
